@@ -1,0 +1,30 @@
+{% extends 'expense/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container">
+    <div class="jumbotron">
+        <h1>ADD Expense</h1>
+        <form action="{% url 'expense:add' %}" method="POST">
+            {% csrf_token %}
+            <div class="px-10 py-10 flex">
+                <div class="mx-10">
+                    <div class="md-5">
+                        {{form.name | as_crispy_field }}
+                        <br>
+                        {{form.catogery | as_crispy_field }}
+                        <br>
+                        {{form.amount | as_crispy_field }}
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <input type="submit" class="btn btn-success" value="ADD">
+        </form>
+    </div>
+</div>
+
+{% endblock %}

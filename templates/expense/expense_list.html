@@ -1,0 +1,166 @@
+{% extends 'expense/base.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="container">
+    <div class="jumbotron">
+        <h1>Expense list</h1>
+        <table class="table" id="dataTable">
+            <thead class="thead-light">
+              <tr class="table-primary">
+                <th scope="col">NAME</th>
+                <th scope="col">Catogery</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for exp in all_expense %}
+                <tr>
+                    <th scope="row">{{ exp.name }}</th>
+                    <td>{{exp.catogery}}</td>
+                    <td>{{exp.date}}</td>
+                    <td>{{exp.amount}}</td>
+                    <td><a href="{% url 'expense:edit' exp.id %}"><i class='bx bx-edit' ></i></a></td>
+                    <td><a href="{% url 'expense:delete' exp.id %}"><i class='bx bx-trash' style='color:#ff0206' ></i></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          <span class="fort-bold">
+            <h4 style="color: blue;">Total Expense : Rs.  {{ total_expenses.amount__sum | intcomma }}</h4>
+          </span>
+          <br>
+          <div class="row">
+            <div class="col-md-4">
+                <div class="card card-body">
+                    <h6 style="color: blue;">LAST 365 Days</h6>
+                    <p>Rs.  {{ yearly_sum.amount__sum | intcomma }}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-body">
+                    <h6 style="color: blue;">LAST 30 Days</h6>
+                    <p>Rs.  {{ monthly_sum.amount__sum | intcomma }}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-body">
+                    <h6 style="color: blue;">LAST 7 Days</h6>
+                    <p>Rs.  {{ weekely_sum.amount__sum | intcomma }}</p>
+                </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-6">
+                <div class="card card-body">
+                    <h4 style="color: blue;">Past 30 days expenses</h4>
+                    <hr>
+                    {% for data in daily_sum %}
+                        <span>{{data.date}}</span>
+                        <span>Rs. {{data.sum}}</span>
+                    {% endfor %}
+                </div>
+                <br>
+            </div>
+            
+                <div class="col-md-6">
+                    <div class="card card-body">
+                        <h4 style="color: blue;">Catogery Expenses</h4>
+                        <hr>
+                        <div id="cat-sum-table">
+                            {% for data in catogery_sum %}
+                                <span>{{data.catogery}}</span>
+                                <span>Rs. {{data.sum}}</span><br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <br>
+          <!-- Rows for having the chats -->
+          <div class="row">
+            <div class="col-md-6">
+                <div class="card card-body">
+                    <h6 style="color: blue;">Expenses Spend across Catogeries</h6>
+                    <canvas id="myChart" width="200" height="200"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-body">
+
+                </div>
+            </div>
+          </div>
+    </div>
+</div>
+
+   
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get table and data
+            var table = document.getElementById("dataTable");
+            var labels = [];
+            var data = [];
+            
+            // Loop through table rows and extract data
+            for (var i = 1; row = table.rows[i]; i++) {
+                var row = table.rows[i];
+                var label = row.cells[1].innerText;
+                var value = parseInt(row.cells[3].textContent);
+                // console.log(typeof value)
+
+                labels.push(label);
+                data.push(value);
+                
+            }
+            // console.log(data);
+            //console.log(typeof data)
+            //let items = data.map((item)=>{
+            //    console.log (parseFloat(item))
+             //   console.log(typeof item)
+            //})
+            // console.log(labels);
+            // Get the context of the canvas element we want to select
+            var ctx = document.getElementById('myChart').getContext('2d');
+        
+            // Create the Chart
+            var myChart = new Chart(ctx, {
+                type: 'doughnut', // Change this to the type of chart you want (line, bar, pie, etc.)
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'My Dataset',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(74, 212, 81, 1)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(74, 212, 81, 1)',   
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+
+{% endblock %}

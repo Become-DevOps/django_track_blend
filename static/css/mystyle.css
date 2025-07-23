@@ -1,0 +1,10 @@
+#bg{
+    background-size: 1750px 800px;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-attachment: fixed;
+}
+
+h1{
+    color: aliceblue;
+}

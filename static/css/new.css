@@ -1,0 +1,10 @@
+#bg{
+    background-size: 1700px 800px;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-attachment: fixed;
+}
+
+h1{
+    color:darkblue;
+}

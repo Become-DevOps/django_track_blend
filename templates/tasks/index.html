@@ -1,0 +1,81 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<br>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>All Task List</h1>
+            <br>
+            <p>
+                <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                  Add &nbsp;&nbsp;<i class="bi bi-plus-circle"></i>
+                </a>
+              </p>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" class="btn btn-primary" value="ADD">
+                    </form>
+                </div>
+              </div>
+            <br>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">TaskId</th>
+                    <th scope="col">TaskName</th>
+                    <th scope="col">Assigned By</th>
+                    <th scope="col">Assigned To</th>
+                    <th scope="col">Review</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                    <th scope="col">Priority</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for task in alltasks %}
+                  <tr>
+                    <th>{{ task.taskid }}</th>
+                    <td>{{ task.taskname }}</td>
+                    <td>{{ task.assigned_by }}</td>
+                    <td>{{ task.assigned_to }}</td>
+                    <td>{{ task.review }}</td>
+                    <td><a href="{% url 'taskmanager:edit' id=task.id %}" class="btn btn-warning">edit</a></td>
+                    <td><a href="{% url 'taskmanager:delete' id=task.id %}" class="btn btn-danger">delete</a></td>
+                    <td>{{ task.priority }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <br>
+              <!-- Pagination starts -->
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                    <a class="page-link" href="?pg=1"><<</a>
+                  </li>
+                  {% if alltasks.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="?pg={{ alltasks.previous_page_number }}">{{ alltasks.previous_page_number }}</a>
+                  </li>
+                  {% endif %}
+                  <li class="page-item">
+                    <a class="page-link" href="?pg={{ alltasks.number }}">{{ alltasks.number }}</a>
+                  </li>
+                  {% if alltasks.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="?pg={{ alltasks.next_page_number }}">{{ alltasks.next_page_number }}</a>
+                  </li>
+                  {% endif %}
+                  <li class="page-item">
+                    <a class="page-link" href="?pg={{ alltasks.paginator.num_pages }}">>></a>
+                  </li>
+                </ul>
+              </nav>
+              <!-- pagination ends -->
+        </div>
+    </div>
+    
+{% endblock %}
